@@ -1,0 +1,1 @@
+web: gunicorn src:web: gunicorn --workers 3 --bind :8000 src:app

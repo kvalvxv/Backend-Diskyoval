@@ -1,0 +1,9 @@
+from src import create_app
+from src import db
+from flask_migrate import Migrate
+
+app = create_app()
+migrate = Migrate(app, db)
+
+if __name__ == 'main' :
+    app.run(debug=true , port=app.config['PORT'])
