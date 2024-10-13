@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
+from jwt.exceptions import DecodeError
 from dotenv import load_dotenv
 from flask_cors import CORS
 import os
@@ -31,7 +32,7 @@ def create_app():
         
         
         
-        db.create_all()
+    #db.create_all()
 
     
     @jwt.invalid_token_loader

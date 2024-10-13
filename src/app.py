@@ -5,5 +5,5 @@ from flask_migrate import Migrate
 app = create_app()
 migrate = Migrate(app, db)
 
-if __name__ == 'main' :
-    app.run(debug=true , port=app.config['PORT'])
+if __name__ == '__main__' :
+    app.run(debug=True , port=app.config['PORT'])
