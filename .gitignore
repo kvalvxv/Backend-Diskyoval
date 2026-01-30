@@ -1,8 +1,55 @@
+# Environment variables
 .env
 
+# Virtual environments
 venv
 venv_wsl
+.venv
+env/
+ENV/
 
+# Database migrations
 migrations
 
-__pycache__
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Flask specific
+instance/
+.webassets-cache
+
+# Database files
+*.db
+*.sqlite

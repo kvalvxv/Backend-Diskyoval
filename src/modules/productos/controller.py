@@ -6,21 +6,25 @@ def get_product_by_id(product_id):
 
 def get_all_products():
     products = Product.query.all()
-    return [product.to_dict() for product in products], 200
+    return [product.to_dict() for product in products]
 
 def create_product(product_list):
     results = []
-    for data in product_list:
-        new_product = Product(
-            name=data['name'],
-            price=data['price'],
-            stock=data['stock'],
-            description=data['description']
-        )
-        db.session.add(new_product)
-        results.append(new_product.to_dict())
-    db.session.commit()
-    return results
+    try:
+        for data in product_list:
+            new_product = Product(
+                name=data['name'],
+                price=data['price'],
+                stock=data['stock'],
+                description=data['description']
+            )
+            db.session.add(new_product)
+            results.append(new_product.to_dict())
+        db.session.commit()
+        return results
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
 def update_product(product_id, data):
     product = get_product_by_id(product_id)

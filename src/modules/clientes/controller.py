@@ -1,8 +1,14 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import User, db
+from .models import User
+from src import db
+from src.utils.validators import validate_user_data, validate_login_data
 from flask import jsonify
 
 def create_user(data):
+    errors = validate_user_data(data)
+    if errors:
+        return {"error": "Validation failed", "details": errors}
+    
     try:
         hashed_password = generate_password_hash(data['password'])
         new_user = User(
@@ -15,18 +21,41 @@ def create_user(data):
         )
         db.session.add(new_user)
         db.session.commit()
-        print(f"ID del nuevo usuario: {new_user.id_client}") 
-        return jsonify({"message": "User created successfully"}), 201
+        return {"message": "User created successfully", "id_client": new_user.id_client}
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        raise e
 
 def authenticate_user(data):
+    errors = validate_login_data(data)
+    if errors:
+        return {"error": "Validation failed", "details": errors}
+    
     user = User.query.filter_by(email=data['email']).first()
-    if user :
-        print(f"Usuario encontrado: {user.email}, ID Cliente: {user.id_client}") 
     if user and check_password_hash(user.password, data['password']):
-        return jsonify({"message": "Authentication successful", "id_client": user.id_client}),200
-       
+        return {"message": "Authentication successful", "id_client": user.id_client, "user_type": user.user_type}
     else:
-        return jsonify({"message": "Invalid credentials"}), 401
+        return {"message": "Invalid credentials"}
+
+
+def get_all_users(search=None):
+    try:
+        if search:
+            users = User.query.filter(User.name.ilike(f"%{search}%")).all()
+        else:
+            users = User.query.all()
+
+        user_list = []
+        for user in users:
+            user_list.append({
+                'id_client': user.id_client,
+                'name': user.name,
+                'lastname': user.lastname,
+                'email': user.email,
+                'phone': user.phone,
+                'user_type': user.user_type
+            })
+
+        return user_list
+    except Exception as e:
+        raise e

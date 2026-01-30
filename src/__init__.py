@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from jwt.exceptions import DecodeError
