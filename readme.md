@@ -75,18 +75,37 @@ Backend-Diskyoval is a comprehensive e-commerce backend API built with Python Fl
    MYSQL_DB=your-database-name
    PORT=4001
    ```
+   ⚠️ **IMPORTANT**: Generate secure keys! See [SETUP.md](SETUP.md) for detailed instructions.
 
-5. **Set up database**
+5. **Set up database and user**
    ```bash
-   # Initialize migrations (first time only)
-   flask db init
-   
-   # Create migration
-   flask db migrate -m "Initial migration"
-   
-   # Apply migrations
+   # Create database and user in MySQL
+   mysql -u root -p
+   CREATE DATABASE diskyoval_db;
+   CREATE USER 'diskyoval_user'@'localhost' IDENTIFIED BY 'your_password';
+   GRANT ALL PRIVILEGES ON diskyoval_db.* TO 'diskyoval_user'@'localhost';
+   FLUSH PRIVILEGES;
+   EXIT;
+   ```
+
+6. **Apply database migrations**
+   ```bash
    flask db upgrade
    ```
+
+7. **Create admin user**
+   ```bash
+   python generate_passwordsAdmin.py
+   ```
+
+## 🚨 **IMPORTANT: Read SETUP.md**
+
+Migration alone is NOT enough! **[SETUP.md](SETUP.md)** contains the complete installation guide with:
+- Database setup instructions
+- Security key generation
+- Troubleshooting common issues
+- Verification checklist
+- Security best practices
 
 ## 🏃‍♂️ Running the Application
 
