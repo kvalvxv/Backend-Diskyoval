@@ -1,25 +1,55 @@
 import os
 import cloudinary
-from cloudinary import api, uploader
+from cloudinary import uploader
 from cloudinary.utils import cloudinary_url
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Check if Cloudinary is configured
-CLOUDINARY_CONFIGURED = all([
-    os.getenv('CLOUDINARY_CLOUD_NAME'),
-    os.getenv('CLOUDINARY_API_KEY'),
-    os.getenv('CLOUDINARY_API_SECRET')
-])
+# Check if Cloudinary is configured via CLOUDINARY_URL or individual variables
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 
-if CLOUDINARY_CONFIGURED:
-    cloudinary.config(
-        cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
-        api_key=os.getenv('CLOUDINARY_API_KEY'),
-        api_secret=os.getenv('CLOUDINARY_API_SECRET'),
-        secure=True
-    )
+if CLOUDINARY_URL:
+    # Parse CLOUDINARY_URL (format: cloudinary://api_key:api_secret@cloud_name)
+    try:
+        # Remove 'cloudinary://' prefix and parse
+        url_part = CLOUDINARY_URL.replace('cloudinary://', '')
+        if '@' in url_part:
+            api_secret_cloud = url_part.split('@')[0]
+            cloud_name = url_part.split('@')[1]
+            # Extract API key and secret (format: key:secret)
+            if ':' in api_secret_cloud:
+                api_key = api_secret_cloud.split(':')[0]
+                api_secret = ':'.join(api_secret_cloud.split(':')[1:])
+                
+                cloudinary.config(
+                    cloud_name=cloud_name,
+                    api_key=api_key,
+                    api_secret=api_secret,
+                    secure=True
+                )
+                CLOUDINARY_CONFIGURED = True
+            else:
+                CLOUDINARY_CONFIGURED = False
+        else:
+            CLOUDINARY_CONFIGURED = False
+    except Exception as e:
+        print(f"Error parsing CLOUDINARY_URL: {e}")
+        CLOUDINARY_CONFIGURED = False
+else:
+    CLOUDINARY_CONFIGURED = all([
+        os.getenv('CLOUDINARY_CLOUD_NAME'),
+        os.getenv('CLOUDINARY_API_KEY'),
+        os.getenv('CLOUDINARY_API_SECRET')
+    ])
+    
+    if CLOUDINARY_CONFIGURED:
+        cloudinary.config(
+            cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+            api_key=os.getenv('CLOUDINARY_API_KEY'),
+            api_secret=os.getenv('CLOUDINARY_API_SECRET'),
+            secure=True
+        )
 
 
 def upload_image(file, folder='diskyoval/products'):
