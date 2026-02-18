@@ -8,8 +8,8 @@ venv_wsl
 env/
 ENV/
 
-# Database migrations
-migrations
+# Database migrations (uncomment to track migrations)
+# migrations
 
 # Python cache
 __pycache__/
