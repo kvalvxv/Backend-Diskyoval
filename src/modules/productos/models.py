@@ -9,14 +9,17 @@ class Product(db.Model):
     description = db.Column(db.String(1000), nullable=False)
     price = db.Column(db.Float, nullable=False)
     stock = db.Column(db.Integer, nullable=False)
+    image_url = db.Column(db.String(500), nullable=True)
+    image_public_id = db.Column(db.String(255), nullable=True)
     
     product_carts = relationship('ProductCart', back_populates='product')
     
     def to_dict(self):
         return {
-            'id_product':self.id_product,
-            'name':self.name,
-            'description':self.description,
-            'price':self.price,
-            'stock':self.stock,
+            'id_product': self.id_product,
+            'name': self.name,
+            'description': self.description,
+            'price': self.price,
+            'stock': self.stock,
+            'image_url': self.image_url,
         }
