@@ -65,15 +65,17 @@ def create_app(config_name=None):
             }), 200
     
     @jwt.invalid_token_loader
-    def invalid_token_callback():
+    def invalid_token_callback(error):
         return jsonify({
-            "msg": "Signature verification failed."
+            "msg": "Signature verification failed.",
+            "error": str(error)
         }), 401
         
     @jwt.unauthorized_loader
-    def missing_token_callback():
+    def missing_token_callback(error):
         return jsonify({
-            "msg": "Request does not contain an access token."
+            "msg": "Request does not contain an access token.",
+            "error": str(error)
         }), 401
 
     return app

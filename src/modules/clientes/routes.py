@@ -50,8 +50,14 @@ def login():
         if result.get("message") == "Authentication successful":
             id_client = result.get('id_client')
             user_type = result.get('user_type')
-            access_token = create_access_token(identity={'email': email, 'id_client': id_client, 'user_type': user_type })
-            return jsonify({'access_token': access_token, 'user_type': user_type}), 200
+            identity = f"{email}|{id_client}|{user_type}"
+            access_token = create_access_token(identity=identity)
+            return jsonify({
+                'access_token': access_token, 
+                'user_type': user_type,
+                'id_client': id_client,
+                'email': email
+            }), 200
         else:
             return jsonify(result), 401
     except Exception as e:
@@ -71,7 +77,13 @@ def get_users():
 @jwt_required()
 def protected():
     try:
-        current_user = get_jwt_identity()
+        identity = get_jwt_identity()
+        parts = identity.split('|')
+        current_user = {
+            'email': parts[0] if len(parts) > 0 else None,
+            'id_client': parts[1] if len(parts) > 1 else None,
+            'user_type': parts[2] if len(parts) > 2 else None
+        }
         return jsonify({
             'message': 'Congratulations! You have reached a protected route!',
             'user': current_user,
